@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'nimbussanlbold';
+    src: url('fonts/nimbussanl-bold-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlconbold';
+    src: url('fonts/nimbussanl-boldcond-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-boldcond-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlconbold_italic';
+    src: url('fonts/nimbussanl-boldcondital-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-boldcondital-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlbold_italic';
+    src: url('fonts/nimbussanl-boldital-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-boldital-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlregular';
+    src: url('fonts/nimbussanl-regu-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-regu-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlconregular';
+    src: url('fonts/nimbussanl-regucond-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-regucond-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlconitalic';
+    src: url('fonts/nimbussanl-regucondital-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-regucondital-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'nimbussanlitalic';
+    src: url('fonts/nimbussanl-reguital-webfont.woff2') format('woff2'),
+         url('fonts/nimbussanl-reguital-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}

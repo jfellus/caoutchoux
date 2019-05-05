@@ -1,0 +1,4 @@
+\documentclass[crop]{standalone}
+\begin{document}
+$\sum xy$
+\end{document}

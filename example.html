@@ -1,0 +1,108 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery.js"></script>
+  <script>
+
+  if(typeof require === "function") { // Is in editor mode
+      $ = require(require('process').cwd() + '/src/lib/jquery.js')
+      editor = require(require('process').cwd() + '/src/editor.js')
+  } else {
+    window.onkeydown = function(e) {
+      if(isNavigating) {
+        if(e.key == "ArrowLeft") prev();
+        else if(e.key == "ArrowRight") next();
+        else if(e.key == "Home") home();
+      }
+    }
+  }
+
+
+  isNavigating = true
+  page = 1
+
+  function goto_page(i) {
+    $("page").eq(page-1).attr("cur", null)
+    page=i;
+    $("page").eq(page-1).attr("cur", "")
+  }
+
+  function next() {
+    if(page>=$("page").length) return;
+    goto_page(page+1)
+  }
+
+  function prev() {
+    if(page<=1) return;
+    goto_page(page-1)
+  }
+
+  function home() {
+    goto_page(1)
+  }
+
+
+  </script>
+</head>
+<body>
+
+<page home cur>
+  <div class="header"></div>
+<h1 class='title'>A nice Beamer-like CSS template example</h1>
+<h2 class='author'>Jérôme Fellus</h2>
+<h3 class='affiliation'>Blabla lab</h3>
+<h3 class='date'>5 may 2019</h3>
+<div class='logos'>
+  <img src="https://www.irisa.fr/sites/all/themes/irisa_theme/logoIRISA-web.png">
+  <img src="https://www.irisa.fr/sites/all/themes/irisa_theme/logoIRISA-web.png">
+  <img src="https://www.irisa.fr/sites/all/themes/irisa_theme/logoIRISA-web.png">
+</div>
+</page>
+
+<page outline>
+
+<h1>Outline</h1>
+<ol>
+  <li class='cur'>Introduction</li>
+  <li>Related work</li>
+  <li>Contribution</li>
+  <li>Experiments</li>
+  <li>Conclusion & Perspectives</li>
+</ol>
+</page>
+
+
+<page>
+
+<h1>Some blocks and formulas...</h1>
+
+<div class='block'>
+<h2>A nice block with maths</h2>
+<p>A paragraph with some content. A paragraph with some content. A paragraph with some content. A paragraph with some content. A paragraph with some content. </p>
+<p>A paragraph with some content. A paragraph with some content. A paragraph with some content. </p>
+<ol>
+  <li class='cur'>Introduction</li>
+  <li>Related work</li>
+  <li>Contribution</li>
+  <li>Experiments</li>
+  <li>Conclusion & Perspectives</li>
+</ol>
+</div>
+
+<div class='block'>
+<p>A less nice block without title</p>
+</div>
+
+<div class='block'>
+<h2>A nice block with maths</h2>
+<p>content</p>
+</div>
+
+</page>
+
+
+
+</body>
+</html>
