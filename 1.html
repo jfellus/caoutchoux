@@ -1,13 +1,17 @@
 <html><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="css/highlight.css">
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/jquery.js"></script>
+  <script src="./js/jquery.js"></script>
+  <script src="./js/highlight.js"></script>
   <script>
 
   if(typeof require === "function") { // Is in editor mode
-      $ = require(require('process').cwd() + '/src/lib/jquery.js')
-      editor = require(require('process').cwd() + '/src/editor.js')
+      cwd = require('process').cwd()
+      $ = require(cwd + '/src/lib/jquery.js')
+      hljs = require(cwd + '/src/lib/highlight.js')
+      editor = require(cwd + '/src/editor.js')
   } else {
     window.onkeydown = function(e) {
       if(isNavigating) {
@@ -18,6 +22,7 @@
     }
   }
 
+  hljs.initHighlightingOnLoad();
 
   isNavigating = true
   page = 1
@@ -47,7 +52,7 @@
 </head>
 <body>
 
-<page home="" contenteditable="false" cur="">
+<page home="" contenteditable="false">
   <div class="header" contenteditable="false"></div>
 <h1 class="title" contenteditable="false">Zebulon: Towards another approach to Beamer slides<br contenteditable="false"></h1>
 <h2 class="author" contenteditable="false">Jérôme Fellus</h2>
@@ -73,36 +78,23 @@
 </page>
 
 
-<page contenteditable="false">
+<page contenteditable="false" cur="">
 
-<h1 contenteditable="false">Some blocks and formulas...</h1>
+<h1 contenteditable="false">Some blocks and formulas...</h1><div contenteditable="false">seie <pre class="hljs coffeescript" contenteditable="false"><code contenteditable="false"><span class="hljs-keyword" contenteditable="false">import</span> cs <span class="hljs-keyword" contenteditable="false">as</span> 
+rijri
+def eijr():
 
-<div class="block" contenteditable="false">
-<h2 contenteditable="false">A nice block with maths</h2>
-<p contenteditable="false">A paragraph with some content. A paragraph with some content. A paragraph with some content. A paragraph with some content. A paragraph with some content. </p>
-<p contenteditable="false">A paragraph with some content. A paragraph with some content. A paragraph with some content. </p>
-<ol contenteditable="false">
-  <li class="cur" contenteditable="false">Introduction</li>
-  <li contenteditable="false">Related work</li>
-  <li contenteditable="false">Contribution</li>
-  <li contenteditable="false">Experiments</li>
-  <li contenteditable="false">Conclusion &amp; Perspectives</li>
-</ol>
-</div>
-
-<div class="block" contenteditable="false">
-<p contenteditable="false">A less nice block without title</p>
-</div>
+</code></pre></div>
 
 <div class="block" contenteditable="false">
 <h2 contenteditable="false">A nice block with maths</h2>
-<p contenteditable="false">content</p>
-</div>
-
-</page>
+<p contenteditable="false">A paragraph with some content. A par</p><pre class="hljs coffeescript" contenteditable="false"><code contenteditable="false"><span class="hljs-keyword" contenteditable="false">import</span> cs <span class="hljs-keyword" contenteditable="false">as</span> ok
+</code>ontent</pre><p contenteditable="false"></p></div><div class="block" contenteditable="false"><div contenteditable="false">do</div></div><div class="block" contenteditable="false"><h2 contenteditable="false">Title</h2>content<span style="font-size: 2.7vh;" contenteditable="false">ss</span></div></page>
 
 
 
 
 
-</body></html>
+
+<div class="toolbar"><button>Add block</button></div>
+<div class="toolbar"><button>Add block</button></div><div class="toolbar"><button>Add block</button></div></body></html>

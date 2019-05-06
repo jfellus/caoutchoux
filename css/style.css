@@ -20,6 +20,7 @@ html {
   html {overflow: visible;}
 }
 
+pre {display:inline-block; margin:0; }
 body {  padding:0;margin:0 }
 
 page {
@@ -175,3 +176,37 @@ page[outline] ol li::before {
 
 page[outline] ol li { opacity:0.3; }
 page[outline] ol li.cur { opacity:1; }
+
+
+/***************************/
+
+div.toolbar {
+  position:fixed;
+  right:0;
+  bottom:0;
+  box-shadow: -2px -2px 3px #222222;
+  background: #aaaaaa;
+  color:black;
+  display:flex;
+  flex-direction: column;
+  padding: 30px 3px;
+}
+
+
+pre.hljs {
+  margin: 6px;
+  display: block;
+  overflow-x: auto;
+  padding: .5em;
+  background: #ffffff;
+  border: 1px solid #00000063;
+  border-radius: 3px;
+  box-shadow: 2px 2px 3px #b5b5b56e;
+}
+code.hljs {
+  margin: 0;
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  background: #ffffff;
+}
