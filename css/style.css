@@ -20,8 +20,19 @@ html {
   html {overflow: visible;}
 }
 
-pre {display:inline-block; margin:0; }
-body {  padding:0;margin:0 }
+pre { position: relative !important;
+        border: 1px solid lightgray;
+        margin: 10px auto;
+        height: 200px;
+        width: 98%; display: block; font-family: monospace;
+      }
+pre * { font-family: monospace;}
+.ace_editor, .ace_editor div {
+    font-family:monospace;
+}
+p.dummy {height:2px; overflow:hidden;}
+
+body {  padding:0;margin:0; }
 
 page {
   border:3px solid white;
@@ -102,10 +113,9 @@ ol li::before {
 
 svg.latex {
   fill:currentColor;
-  height:1em;
   width:auto;
   vertical-align: middle;
-  margin:0;
+  margin:-3px 0;
   padding:0;
 }
 
@@ -181,6 +191,7 @@ page[outline] ol li.cur { opacity:1; }
 /***************************/
 
 div.toolbar {
+  z-index: 1000;
   position:fixed;
   right:0;
   bottom:0;
@@ -190,23 +201,39 @@ div.toolbar {
   display:flex;
   flex-direction: column;
   padding: 30px 3px;
+  border-top-left-radius: 20px;
+}
+.toolbar button {
+  cursor:pointer;
+  outline:none;
+  font-size:15px;
+  border:none;
+  border-radius:10px;
+  padding:8px;
+}
+
+@media print {
+    div.toolbar{
+      display:none;
+    }
+    #exportpdf-wait { display:none !important; }
 }
 
 
-pre.hljs {
-  margin: 6px;
-  display: block;
-  overflow-x: auto;
-  padding: .5em;
-  background: #ffffff;
-  border: 1px solid #00000063;
-  border-radius: 3px;
-  box-shadow: 2px 2px 3px #b5b5b56e;
+#exportpdf-wait {
+  position:fixed; top:0; bottom:0; left:0; right:0;
+  opacity:0.8;
+  background: black;
+  color:white;
+  font-size:40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
-code.hljs {
-  margin: 0;
-  display: block;
-  overflow-x: auto;
-  padding: 0;
-  background: #ffffff;
+
+img.svg-dummy-boundaries { width:0px; height:0px;}
+span.latex.equation { display:block; text-align:center;}
+.latex .equation-nb {
+  float:right; margin-right:3em; font-style: italic;
 }

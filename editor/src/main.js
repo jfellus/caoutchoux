@@ -1,6 +1,6 @@
 const {ipcMain, Menu, MenuItem, globalShortcut, app, BrowserWindow, dialog} = require('electron')
 const path = require("path")
-
+const fs = require("fs")
 let mainWindow
 
 function DBG(msg) {
@@ -26,7 +26,7 @@ function createWindow () {
       {label:"Open"},
       {label:"Save"},
       {label:"Save As"},
-      {label:"Export as PDF"},
+      {label:"Export as PDF", accelerator:'Ctrl + E', click() { export_as_pdf() }},
       {label:"Quit"}
     ]}, {label:"Open devtools", accelerator:'F12', click() { mainWindow.toggleDevTools() }},
     {label:"Reload", accelerator:'Ctrl + R', click() { open(process.argv[2] || "../1.html") }}
@@ -83,4 +83,16 @@ function open(f) {
   f = path.normalize(f)
   mainWindow.loadURL("file://" + f)
   mainWindow.setTitle(f)
+  filename = f
+}
+
+function export_as_pdf() {
+  mainWindow.webContents.send("exportpdf-begin")
+  mainWindow.webContents.printToPDF({printBackground: true}, (error, data) => {
+    if (error) throw error
+    fs.writeFile(filename.replace(".html", ".pdf"), data, (error) => {
+     if (error) throw error
+     mainWindow.webContents.send("exportpdf-end")
+    })
+  })
 }
