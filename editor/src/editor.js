@@ -68,6 +68,8 @@ function save() {
   doc.find("pre.ace_editor").each(function() {
     $(this).replaceWith("<pre>" + ace_editors[parseInt($(this).attr("ace-editor-id"))].getValue() + "</pre>")
   })
+  doc.find(".toolbar").remove()
+  doc.find("latex_editor").remove()
   html = doc.html()
   head = fs.readFileSync(process.cwd() + '/src/head.html', 'utf8')
   html = "<html>" + head + "<body>" + html + "</body></html>"
@@ -149,6 +151,15 @@ $(function(){
   toolbar.append($("<button>Add block</button>").on("click", ()=>{ add_block() }))
   toolbar.append($("<button>Add slide</button>").on("click", ()=>{ add_slide() }))
   $("body").append(toolbar)
+
+  latex_editor = $("<div class='latex_editor'></div>")
+  $("body").append(latex_editor)
+  ace_latex_editor = ace.edit(latex_editor[0]);
+  ace_latex_editor.session.setMode("ace/mode/" + "latex");
+  ace_latex_editor.setTheme("ace/theme/tomorrow");
+  // ace_latex_editor.setAutoScrollEditorIntoView(true);
+  ace_latex_editor.setOption("maxLines", 1000);
+  ace_latex_editor.setOption("fontSize", "20pt");
 })
 
 function add_block() {
