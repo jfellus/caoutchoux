@@ -3,4 +3,4 @@ cd `dirname $1`
 f=`basename $1`
 latex "$f"
 dvisvgm --no-fonts "${f%.tex}.dvi" "${f%.tex}.svg"
-rm -f "${f%.tex}.log" "${f%.tex}.aux" "${f%.tex}.dvi" "${f%.tex}.dvi" "$f"
+rm -f "${f%.tex}.log" "${f%.tex}.aux" "${f%.tex}.dvi" "$f"

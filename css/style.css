@@ -213,16 +213,19 @@ div.toolbar {
   margin:2px;
 }
 
-div.latex_editor {
-  position:fixed; bottom:0; left:20%; right:20%;
+pre.latex_editor {
+  position:fixed !important; bottom:0; left:20%; right:20%;
   height:10vh;
+  font-family:monospace;
 }
+ pre.latex_editor div { font-family: monospace;}
 
 @media print {
     div.toolbar{
       display:none;
     }
     div.latex { display:none !important; }
+    .latex_editor { display:none !important;}
     #exportpdf-wait { display:none !important; }
 }
 
@@ -252,3 +255,5 @@ span.latex.equation { display:block; text-align:center; position:relative;}
     display: flex;
     align-items: center;
 }
+
+svg.latex { cursor:hand; }

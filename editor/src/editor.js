@@ -57,7 +57,12 @@ function setTitle(t) { ipcRenderer.send("title", t) }
 
 function edit_mode(b) {
   isPresentation = !b
-  $("page, page *").attr("contentEditable", b)
+  $("page, page *").attr("contentEditable", b ? true : null)
+  $("svg").each(function(){
+    $(this).attr("contenteditable", null)
+    $(this).find("*").attr("contentEditable", null)
+    $(this).find("*").attr("contenteditable", null)
+  })
 }
 $(function() { edit_mode(true) })
 
@@ -65,11 +70,11 @@ function save() {
   edit_mode(false)
   f = document.location.pathname;
   doc = $("body").clone()
+  doc.find(".toolbar").remove()
+  doc.find(".latex_editor").remove()
   doc.find("pre.ace_editor").each(function() {
     $(this).replaceWith("<pre>" + ace_editors[parseInt($(this).attr("ace-editor-id"))].getValue() + "</pre>")
   })
-  doc.find(".toolbar").remove()
-  doc.find("latex_editor").remove()
   html = doc.html()
   head = fs.readFileSync(process.cwd() + '/src/head.html', 'utf8')
   html = "<html>" + head + "<body>" + html + "</body></html>"
@@ -109,16 +114,22 @@ function convertTex2SVG(tex, isEq, cb) {
 
   child_process.exec(process.cwd() + "/tools/latex2svg " + dir+"/"+f+".tex", (err, stdout, stderr) => {
     if(err) { console.log(stderr); return;}
-    var svg = fs.readFileSync(dir+"/"+f+".svg", "utf-8")
-    fs.unlinkSync(dir+"/"+f+".svg")
+    try {
+      var svg = fs.readFileSync(dir+"/"+f+".svg", "utf-8")
+      fs.unlinkSync(dir+"/"+f+".svg")
+      cb(svg, tex)
+    } catch(e) {
+      cb(null, tex)
+    }
     // dataURL = "data:image/svg+xml;base64," + window.btoa(svg)
-    cb(svg, tex)
   })
 }
 
-function convertTexNode2SVG(node, isEq, cb) {
-  convertTex2SVG(node.data, isEq, (svg, tex) => {
+function convertTex2SVG_elt(tex, isEq, cb) {
+  convertTex2SVG(tex, isEq, (svg, tex) => {
+    if(!svg) return cb(null)
     svg = $(svg)
+    if(svg.length === 5) svg = $(svg[svg.length-1])
     var offset = -.1
     if(tex.indexOf("\\")===-1) {
       var hasH = (new RegExp("[bdhiklt]")).test(tex)
@@ -126,22 +137,31 @@ function convertTexNode2SVG(node, isEq, cb) {
       if(hasH && !hasL) offset = -.43
       else if(!hasH && hasL) offset = .12
     }
-    h = parseFloat(svg[4].getAttribute("height"))
-    w = parseFloat(svg[4].getAttribute("width"))
+    h = parseFloat(svg.attr("height"))
+    w = parseFloat(svg.attr("width"))
     svg.css("margin-top", offset + "em")
     svg.attr("height", (h*.13) + "em")
     svg.attr("width", null)
     svg.attr("data-tex", tex)
     svg.addClass("latex")
-    span = $("<span class='latex "+ (isEq ? "equation" : "") +"'><img class='svg-dummy-boundaries'></img></span>")
-    span.append(svg);
-    span.append("<img class='svg-dummy-boundaries'></img>")
-    if(isEq) span.append("<span class='equation-nb'></span>")
-    $(node).replaceWith(span);
-    if(isEq) span.after("<p>&nbsp;</p>")
-    $(".latex .equation-nb").each(function(i) { $(this).html("("+(i+1)+")")})
-    cb();
+    svg.click(function(){open_latex_editor(this)})
+    cb(svg)
   })
+}
+
+
+function convertTexNode2SVG_wrap(node, isEq, cb) {
+    convertTex2SVG_elt(node.data, isEq, (svg) => {
+      if(!svg) return cb(null)
+      var span = $("<span class='latex "+ (isEq ? "equation" : "") +"'><img class='svg-dummy-boundaries'></img></span>")
+      span.append(svg);
+      span.append("<img class='svg-dummy-boundaries'></img>")
+      if(isEq) span.append("<span class='equation-nb'></span>")
+      $(node).replaceWith(span);
+      if(isEq) span.after("<p>&nbsp;</p>")
+      $(".latex .equation-nb").each(function(i) { $(this).html("("+(i+1)+")")})
+      cb(svg);
+    })
 }
 
 //////////////////////
@@ -152,7 +172,8 @@ $(function(){
   toolbar.append($("<button>Add slide</button>").on("click", ()=>{ add_slide() }))
   $("body").append(toolbar)
 
-  latex_editor = $("<div class='latex_editor'></div>")
+  // Latex editor
+  latex_editor = $("<pre class='latex_editor'></pre>")
   $("body").append(latex_editor)
   ace_latex_editor = ace.edit(latex_editor[0]);
   ace_latex_editor.session.setMode("ace/mode/" + "latex");
@@ -160,7 +181,28 @@ $(function(){
   // ace_latex_editor.setAutoScrollEditorIntoView(true);
   ace_latex_editor.setOption("maxLines", 1000);
   ace_latex_editor.setOption("fontSize", "20pt");
+  $(".latex_editor").hide()
+  $("svg.latex").click(function(){open_latex_editor(this)})
+  $(".latex_editor").keydown((e)=> {
+    if(e.key === "Escape") { $(".latex_editor").hide(); ace_latex_editor._cur_edited_elt = null }
+  })
+  $(".latex_editor").keyup((e)=> { update_latex_editor() })
 })
+
+function open_latex_editor(e) {
+    $(".latex_editor").show()
+    ace_latex_editor.setValue(e.getAttribute("data-tex"), 1)
+    ace_latex_editor._cur_edited_elt = e.parentNode
+    ace_latex_editor.focus()
+}
+
+function update_latex_editor() {
+  if(!ace_latex_editor._cur_edited_elt) return
+  var isEq = ace_latex_editor.getValue().indexOf('$$')===0
+  convertTex2SVG_elt(ace_latex_editor.getValue(), isEq, (svg) => {
+    $(ace_latex_editor._cur_edited_elt).children("svg").replaceWith(svg)
+  })
+}
 
 function add_block() {
   $("page[cur]").append("<div class='block'><h2>Title</h2><p>content</p></div>")
@@ -175,6 +217,13 @@ function setCaretBefore(elt) {
   window.getSelection().empty()
   var r = document.createRange()
   r.setStartBefore(elt); r.collapse()
+  window.getSelection().addRange(r)
+}
+
+function setCaretAfter(elt) {
+  window.getSelection().empty()
+  var r = document.createRange()
+  r.setStartAfter(elt); r.collapse()
   window.getSelection().addRange(r)
 }
 
@@ -193,7 +242,7 @@ function on_input_latex(s, isEq) {
   if(i===-1) return;
   var after = s.anchorNode.splitText(s.anchorOffset)
   if(isEq && i!=0) i-=1
-  convertTexNode2SVG(s.anchorNode.splitText(i), isEq, () => {  setCaretBefore(after)  })
+  convertTexNode2SVG_wrap(s.anchorNode.splitText(i), isEq, () => {  setCaretBefore(after)  })
 }
 
 
@@ -213,7 +262,7 @@ function on_input_code(s) {
 function on_newline(s) {
   if(s.rangeCount!==1) return false;
 
-  if(['PRE', 'DIV'].indexOf(s.anchorNode.tagName) !== -1) {
+  if(['PRE', 'DIV'].indexOf(s.anchorNode.tagName) !== -1 && !$(s.anchorNode).hasClass("latex_editor")) {
     var p = $("<p>&nbsp;</p>")
     $(s.anchorNode).after(p);
     s.setPosition(p[0],0)
