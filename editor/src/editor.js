@@ -183,9 +183,8 @@ $(function(){
   ace_latex_editor.setOption("fontSize", "20pt");
   $(".latex_editor").hide()
   $("svg.latex").click(function(){open_latex_editor(this)})
-  $(".latex_editor").keydown((e)=> {
-    if(e.key === "Escape") { $(".latex_editor").hide(); ace_latex_editor._cur_edited_elt = null }
-  })
+  ace_latex_editor.on("blur", () => { $(".latex_editor").hide(); ace_latex_editor._cur_edited_elt = null})
+  $(".latex_editor").keydown((e)=> { if(e.key === "Escape") ace_latex_editor.blur() })
   $(".latex_editor").keyup((e)=> { update_latex_editor() })
 })
 
