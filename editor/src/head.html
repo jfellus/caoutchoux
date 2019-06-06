@@ -9,7 +9,7 @@
   <script>
 
   if(typeof require === "function") { // Is in editor mode
-      cwd = require('process').cwd()
+      cwd = require('app').getAppPath()
       $ = require(cwd + '/src/lib/jquery.js')
       hljs = require(cwd + '/src/lib/highlight.js')
       editor = require(cwd + '/src/editor.js')

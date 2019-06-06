@@ -5,7 +5,7 @@ const util = require('./util.js')
 const crypto = require("crypto");
 const child_process = require("child_process")
 const ace = require('./lib/ace/ace.js')
-
+const app = require('electron').remote.app
 
 window.addEventListener("keydown", (e)=>{onkeydown(e)})
 window.addEventListener("input", (e)=>{oninput(e)})
@@ -76,7 +76,7 @@ function save() {
     $(this).replaceWith("<pre>" + ace_editors[parseInt($(this).attr("ace-editor-id"))].getValue() + "</pre>")
   })
   html = doc.html()
-  head = fs.readFileSync(process.cwd() + '/src/head.html', 'utf8')
+  head = fs.readFileSync(app.getAppPath() + '/src/head.html', 'utf8')
   html = "<html>" + head + "<body>" + html + "</body></html>"
   fs.writeFile(f, html, (err) => {
     if (err) throw err;
@@ -112,7 +112,7 @@ function convertTex2SVG(tex, isEq, cb) {
   var f = crypto.randomBytes(10).toString('hex');
   fs.writeFileSync(dir+"/"+f+".tex", fulltex)
 
-  child_process.exec(process.cwd() + "/tools/latex2svg " + dir+"/"+f+".tex", (err, stdout, stderr) => {
+  child_process.exec(app.getAppPath() + "/tools/latex2svg " + dir+"/"+f+".tex", (err, stdout, stderr) => {
     if(err) { console.log(stderr); return;}
     try {
       var svg = fs.readFileSync(dir+"/"+f+".svg", "utf-8")
@@ -199,6 +199,7 @@ function update_latex_editor() {
   if(!ace_latex_editor._cur_edited_elt) return
   var isEq = ace_latex_editor.getValue().indexOf('$$')===0
   convertTex2SVG_elt(ace_latex_editor.getValue(), isEq, (svg) => {
+    if(!svg) return;
     $(ace_latex_editor._cur_edited_elt).children("svg").replaceWith(svg)
   })
 }
@@ -252,7 +253,7 @@ function on_input_code(s) {
   after.splitText(1)
   code = $("<pre></pre><p class='dummy'>&nbsp;</p>")
   $(after).replaceWith(code)
-  ace.config.set('basePath', process.cwd() + "/src/lib/ace/")
+  ace.config.set('basePath', app.getAppPath() + "/src/lib/ace/")
   create_code_editor(code[0])
 }
 

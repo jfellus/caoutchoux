@@ -1,3 +1,4 @@
 #!/bin/bash
 
-`dirname $0`/node_modules/electron/dist/electron `dirname $0` $*
+f=`readlink -f $1`
+`dirname $0`/node_modules/electron/dist/electron `dirname $0` $1

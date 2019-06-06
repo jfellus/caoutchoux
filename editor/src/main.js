@@ -17,7 +17,7 @@ function createWindow () {
   });
   mainWindow.toggleDevTools()
 
-  open(process.argv[2] || "../1.html")
+  open(process.argv[2] || "./1.html")
 
   mainWindow.maximize()
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu = [
