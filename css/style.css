@@ -285,3 +285,19 @@ span.page {
   right: 10px;
   font-size:80%;
 }
+
+
+
+
+page#page_ml li {
+  padding:2px;
+  background: rgba(0,0,0,0.05S);
+}
+
+
+ol {
+  margin:0; padding:0;
+}
+ol > li {     margin: 7px;
+    margin-left: -16px;
+    padding: 0;}
