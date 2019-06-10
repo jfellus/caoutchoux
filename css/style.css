@@ -7,6 +7,7 @@
 
 
 * { font-family: nimbussanlregular; font-weight: normal;}
+b { font-weight: bold; }
 
 html {
   font-size:2.7vh;
@@ -93,9 +94,13 @@ ol {
   counter-reset: ol-li;
 }
 
+ul {
+    margin:0;padding:0;
+}
+
 li {
   counter-increment: ol-li;
-  margin: 10px 10px;
+  margin: 7px 3px 7px 35px;
 }
 
 ol li::before {
@@ -257,3 +262,26 @@ span.latex.equation { display:block; text-align:center; position:relative;}
 }
 
 svg.latex { cursor:hand; }
+
+
+b.good {
+    background: green;
+    border-radius: 100%;
+    padding: 0.0em 0.35em;
+    color: white;
+}
+
+b.bad {
+    background: red;
+    border-radius: 100%;
+    padding: 0.0em 0.5em;
+    color: white;
+}
+
+
+span.page {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size:80%;
+}

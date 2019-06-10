@@ -9,10 +9,10 @@
   <script>
 
   if(typeof require === "function") { // Is in editor mode
-      cwd = require('app').getAppPath()
-      $ = require(cwd + '/src/lib/jquery.js')
-      hljs = require(cwd + '/src/lib/highlight.js')
-      editor = require(cwd + '/src/editor.js')
+    cwd = require('electron').remote.app.getAppPath()
+    $ = require(cwd + '/src/lib/jquery.js')
+    hljs = require(cwd + '/src/lib/highlight.js')
+    editor = require(cwd + '/src/editor.js')
   } else {
     window.onkeydown = function(e) {
       if(isNavigating) {
@@ -37,6 +37,16 @@
   $(function(){
     home()
     $("pre").each(function() { create_code_editor(this)  })
+
+    $("page").each(function(i) {
+      if(i==0) return
+      var p = $(this).children(".page")
+      if(p.length==0) {
+        $(this).append("<span class='page'></span>")
+        p = $(this).children(".page")
+      }
+      p.html(i)
+    })
   })
 
   isNavigating = true
