@@ -24,6 +24,9 @@ function onkeydown(e) {
     else if(e.key == "PageDown") next();
     else if(e.key == 'F5') presentation();
     else if(e.key == 'Enter') p = on_newline(window.getSelection());
+    else if(e.key == 'Tab') on_tab(window.getSelection(), e.shiftKey);
+    else if(e.key == '+' && e.shiftKey) on_plus(window.getSelection());
+    else if(e.key == '-' && e.shiftKey) on_minus(window.getSelection());
     else p = false
   }
 
@@ -73,7 +76,9 @@ function save() {
   doc.find(".toolbar").remove()
   doc.find(".latex_editor").remove()
   doc.find("pre.ace_editor").each(function() {
-    $(this).replaceWith("<pre>" + ace_editors[parseInt($(this).attr("ace-editor-id"))].getValue() + "</pre>")
+    var pre = $("<pre></pre>")
+    pre.text(ace_editors[parseInt($(this).attr("ace-editor-id"))].getValue())
+    $(this).replaceWith(pre)
   })
   html = doc.html()
   head = fs.readFileSync(app.getAppPath() + '/src/head.html', 'utf8')
@@ -209,8 +214,9 @@ function add_block() {
 }
 
 function add_slide() {
-  $("body").append("<page><h1>Title</h1><p>content</p></page>")
-  last()
+  $("page[cur]").after("<page><h1>Title</h1><p>content</p></page>")
+  edit_mode(true)
+  next()
 }
 
 function setCaretBefore(elt) {
@@ -257,10 +263,57 @@ function on_input_code(s) {
   create_code_editor(code[0])
 }
 
+function on_tab(s, bShift) {
+  if(s.rangeCount!==1) return false;
+  if($(s.anchorNode).hasClass("ace_editor")) return false;
+  var li = (s.anchorNode.tagName === 'UL') ?  $(s.anchorNode).find("li") : $(s.anchorNode).closest("li")
+  if(li[0]) {
+    li_tab(li[0], bShift)
+  }
+}
 
+function li_tab(li, bUntab) {
+  if(bUntab) $(li).closest("ul").replaceWith($(li))
+  else $(li).replaceWith("<ul><li>"+$(li).html()+'</li></ul>')
+}
+
+var SIZE_CLASSES = [ "smallsmall", "small", "normal", "big", "bigbig", "bigbigbig" ]
+function get_size_class_id(e) {
+  for(var i=0; i<SIZE_CLASSES.length; i++) if($(e).hasClass(SIZE_CLASSES[i])) return i
+  return -1
+}
+
+function incr_size_class(e) {
+  var i = get_size_class_id(e)
+  if(i+1==SIZE_CLASSES.length) return;
+  if(i!=-1) $(e).removeClass(SIZE_CLASSES[i])
+  else i=SIZE_CLASSES.indexOf("normal")
+  $(e).addClass(SIZE_CLASSES[i+1])
+}
+
+function decr_size_class(e) {
+  var i = get_size_class_id(e)
+  if(i==0) return;
+  if(i!=-1) $(e).removeClass(SIZE_CLASSES[i])
+  else i=SIZE_CLASSES.indexOf("normal")
+  $(e).addClass(SIZE_CLASSES[i-1])
+}
+
+function on_plus(s) {
+  var e = s.anchorNode.tagName ? s.anchorNode : s.anchorNode.parentElement
+  while('BIU'.indexOf(e.tagName) !== -1) e = e.parentElement
+  incr_size_class(e)
+}
+
+function on_minus(s) {
+  var e = s.anchorNode.tagName ? s.anchorNode : s.anchorNode.parentElement
+  while('BIU'.indexOf(e.tagName) !== -1) e = e.parentElement
+  decr_size_class(e)
+}
 
 function on_newline(s) {
   if(s.rangeCount!==1) return false;
+  if($(s.anchorNode).hasClass("ace_editor")) return false;
 
   if(['PRE', 'DIV'].indexOf(s.anchorNode.tagName) !== -1 && !$(s.anchorNode).hasClass("latex_editor")) {
     var p = $("<p>&nbsp;</p>")
@@ -272,8 +325,25 @@ function on_newline(s) {
   if($(s.anchorNode).text().indexOf("1. ")===0) return create_ol_at(s.anchorNode)
   if($(s.anchorNode).text().indexOf("- ")===0) return create_ul_at(s.anchorNode)
   if($(s.anchorNode).text().indexOf("* ")===0) return create_ul_at(s.anchorNode)
+  if($(s.anchorNode).text().indexOf("<")===0) return create_html_at(s.anchorNode)
+  if($(s.anchorNode).text().indexOf("2cols")===0) return create_2cols_at(s.anchorNode)
   return false;
 }
+
+function create_html_at(node) {
+  e = $($(node).text())
+  $(node).replaceWith(e)
+  setCaretAtBeginingOf(e)
+  return true;
+}
+
+function create_2cols_at(node) {
+  e = $("<div class='two-columns'><div>"+$(node).text()+"</div><div>content</div>")
+  $(node).replaceWith(e)
+  setCaretAtBeginingOf(e.children()[0])
+  return true;
+}
+
 
 function create_ol_at(node) {
   e = $("<ol><li>"+$(node).text().substr(3)+"</li><li>&nbsp;</li></ol>")

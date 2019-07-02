@@ -29,7 +29,7 @@
     editor.setTheme("ace/theme/tomorrow");
     editor.setAutoScrollEditorIntoView(true);
     editor.setOption("maxLines", 1000);
-    editor.setOption("fontSize", "20pt");
+    editor.setOption("fontSize", "17pt");
     $(e).attr("ace-editor-id", ace_editors.length)
     ace_editors.push(editor)
   }
@@ -53,7 +53,7 @@
   page = 1
 
   function goto_page(i) {
-    $("page").eq(page-1).attr("cur", null)
+    $("page[cur]").attr("cur", null)
     page=i;
     $("page").eq(page-1).attr("cur", "")
   }

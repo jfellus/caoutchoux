@@ -301,3 +301,20 @@ ol {
 ol > li {     margin: 7px;
     margin-left: -16px;
     padding: 0;}
+
+
+page iframe {
+  border:1px solid black;
+  outline:none;
+  width:95vw;
+  height:80vh;
+}
+
+div.two-columns {
+display: flex;
+flex-direction: row;
+justify-content: space-evenly;
+}
+div.two-columns > div {
+  padding:10px;
+}
